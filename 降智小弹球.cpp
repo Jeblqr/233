@@ -1,6 +1,6 @@
 #include<bits/stdc++.h>
 #include<windows.h>
-#pragma comment(lib,"winmm.lib")//for PlaySounds
+#pragma comment(lib,"winmm.lib")//for PlaySound
 using namespace std;
 int n,m,x,y,k;
 bool _map[10000][10000];
