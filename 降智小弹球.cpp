@@ -1,13 +1,12 @@
 #include<bits/stdc++.h>
 #include<windows.h>
-#pragma comment(lib,"winmm.lib")
-#define NDEBUG
+#pragma comment(lib,"winmm.lib")//for PlaySounds
 using namespace std;
 int n,m,x,y,k;
 bool _map[10000][10000];
 void tq();
 inline void draw();
-inline void judge();
+inline void move();
 void init();
 int main()
 {
@@ -38,7 +37,7 @@ void init()
 	//https://blog.csdn.net/nocomment_84/article/details/53992730
 	string a;
 	a="mode "+to_string(n+1)+","+to_string(m+1);
-	system(a.c_str());
+	system(a.c_str());//set cmd
 }
 void tq()
 {
@@ -57,9 +56,9 @@ void draw()
 	if (y<=1+1) k=3;
 	_map[x][y]=0;
 	bool bj=0;
-	if (k_!=k)
+	if (k_!=k)//judge the impact
 		Beep(2000,50);
-	judge();
+	move();
 	memset(_map,0,sizeof(_map));
 	for (int i=1;i<=n;i++)
 		_map[i][1]=1;
@@ -83,7 +82,7 @@ void draw()
 	}
 		
 }
-void judge()
+void move()
 {
 	if (k==1)
 		x++,y++;
