@@ -24,4 +24,6 @@ for i in range(1,n+1):
 with open("pi.txt","w") as file:
     file.write(str(pi))
 #print(str(pi),"\n")
+#高斯-勒让德算法
 #最高精确到3.1415926535897931(小数点后15位)，精度问题
+#https://zh.wikipedia.org/wiki/%E9%AB%98%E6%96%AF-%E5%8B%92%E8%AE%A9%E5%BE%B7%E7%AE%97%E6%B3%95
