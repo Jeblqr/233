@@ -23,5 +23,5 @@ for i in range(1,n+1):
     pi=Decimal(((a+b)**2)/(4*t))
 with open("pi.txt","w") as file:
     file.write(str(pi))
-#print(str(pi/100000000000),"\n")
+#print(str(pi),"\n")
 #最高精确到3.1415926535897931(小数点后15位)，精度问题
