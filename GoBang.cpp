@@ -12,6 +12,7 @@ class GoBang
 {
     char mp[Max][Max];
     int n, x, y, zx, zy;
+    int MoveX[5],MoveY[5];
     bool Player;
     int CheckWinner();
     int GetMove();
@@ -29,6 +30,12 @@ class GoBang
 
 void GoBang::Init(int n)
 {
+	MoveX[1]=1;
+	MoveX[2]=1;
+	MoveX[3]=0;
+	MoveY[1]=0;
+	MoveY[2]=-1;
+	MoveY[3]=-1;
     SetN(n);
     memset(mp, '*', sizeof mp);
     Player = 1;
@@ -44,11 +51,12 @@ void GoBang::SetN(int k)
 
 void GoBang::CaseIt(int x, int y)
 {
-    mp[y][x] = Player ? '-' : '+';
+    mp[y][x] = Player ? 'X' : 'O';
 }
 
 int GoBang::CheckWinner()
 {
+	
     return 0;
 }
 
@@ -98,7 +106,6 @@ void GoBang::Check()
     while (true)
     {
         int k = GetMove();
-        Player = !Player;
         while (k != 5) ////down
         {
             switch (k)
@@ -161,6 +168,7 @@ bool GoBang::StartGame()
     while (true)
     {
         x = zx, y = zy;
+        Player = !Player;
         Print();
         Check();
         k = CheckWinner();
@@ -180,7 +188,7 @@ GoBang gb;
 
 int main()
 {
-    gb.Init(5);
+    gb.Init(15);
     gb.StartGame();
     return 0;
 }
