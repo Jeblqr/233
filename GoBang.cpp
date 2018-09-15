@@ -9,6 +9,7 @@
 #define Max 1000
 using namespace std;
 
+
 class GoBang
 {
     char mp[Max][Max];
@@ -57,23 +58,6 @@ void GoBang::CaseIt(int x, int y)
 
 int GoBang::CheckWinner()
 {
-    /*if (k == 5)
-        return Player;
-    for (int i = 1; i <= 3; i++)
-    {
-        int fx = x + MoveX[i], fy = y + MoveY[i];
-        if (fx >= 1 && fx <= n && fy >= 1 && fy <= n)
-        {
-            int l = 0;
-            if (((Player == 1 && mp[fx][fy] == 'O') || ((Player == 2 && mp[fx][fy] == 'X'))) && i == f)
-                l = CheckWinner(fx, fy, i, k + 1, Player);
-            if (l != 0)
-            	return l;
-            l = max(CheckWinner(fx, fy, i, mp[fx][fy] == 'O' ? 1 : 0, 1), CheckWinner(fx, fy, i, mp[fx][fy] == 'X' ? 1 : 0, 2));
-            if (l != 0)
-                return l;
-        }
-    }*/
     for (int i = 1; i <= n; i++)
     {
         for (int j = 1; j <= n; j++)
@@ -178,6 +162,7 @@ int GoBang::GetMove()
     c = getch();
     if (c == 13) //down
         return 5;
+    c = getch();
     switch (c)
     {
     case 75: //left
