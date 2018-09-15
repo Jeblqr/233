@@ -174,11 +174,10 @@ void GoBang::Check()
 
 int GoBang::GetMove()
 {
-    wchar_t c;
+    int c;
     c = getch();
     if (c == 13) //down
         return 5;
-    c = getch();
     switch (c)
     {
     case 75: //left
@@ -190,6 +189,7 @@ int GoBang::GetMove()
     case 80: //low
         return 4;
     }
+    return 2147483647;
 }
 
 bool GoBang::StartGame()
