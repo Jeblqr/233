@@ -45,7 +45,7 @@ void GoBang::Init(int n)
 void GoBang::SetN(int k)
 {
     n = k;
-    zx = zy = n * 1.0 / 2;
+    zx = zy = n / 2;
     zx++, zy++;
 }
 
@@ -63,11 +63,10 @@ int GoBang::CheckWinner(int x, int y, int f, int k, int Player)
         int fx = x + MoveX[i], fy = y + MoveY[i];
         if (fx >= 1 && fx <= n && fy >= 1 && fy <= n)
         {
-            int l;
+            int l=-1;
             if (((Player == 0 && mp[fx][fy] == 'O') || ((Player == 1 && mp[fx][fy] == 'X'))) && i == f)
                 l = CheckWinner(fx, fy, f, k + 1, Player);
-            else
-                l = CheckWinner(fx, fy, i, 0, !Player);
+            l = max(l,max(CheckWinner(fx, fy, i, 0, 0),CheckWinner(fx, fy, i, 0, 1)));
             if (l != 0)
                 return l;
         }
