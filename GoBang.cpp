@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 #include <cstring>
-#include<queue>
+#include <queue>
 #include <cstdlib>
 #include <cstdio>
 #include <algorithm>
@@ -15,7 +15,7 @@ class GoBang
     int n, x, y, zx, zy;
     int MoveX[5], MoveY[5];
     bool Player;
-    int CheckWinner(int x,int y,int f,int k,int Player);
+    int CheckWinner();
     int GetMove();
     void Check();
     void Print();
@@ -35,8 +35,8 @@ void GoBang::Init(int n)
     MoveX[2] = 1;
     MoveX[3] = 0;
     MoveY[1] = 0;
-    MoveY[2] = -1;
-    MoveY[3] = -1;
+    MoveY[2] = 1;
+    MoveY[3] = 1;
     SetN(n);
     memset(mp, '*', sizeof mp);
     Player = 1;
@@ -55,21 +55,38 @@ void GoBang::CaseIt(int x, int y)
     mp[y][x] = Player ? 'X' : 'O';
 }
 
-int GoBang::CheckWinner(int x,int y,int f,int k,int Player)
+int GoBang::CheckWinner()
 {
-    if (k == 5)
-        return Player+1;
+    /*if (k == 5)
+        return Player;
     for (int i = 1; i <= 3; i++)
     {
         int fx = x + MoveX[i], fy = y + MoveY[i];
         if (fx >= 1 && fx <= n && fy >= 1 && fy <= n)
         {
-            int l=-1;
-            if (((Player == 0 && mp[fx][fy] == 'O') || ((Player == 1 && mp[fx][fy] == 'X'))) && i == f)
-                l = CheckWinner(fx, fy, f, k + 1, Player);
-            l = max(l,max(CheckWinner(fx, fy, i, 0, 0),CheckWinner(fx, fy, i, 0, 1)));
+            int l = 0;
+            if (((Player == 1 && mp[fx][fy] == 'O') || ((Player == 2 && mp[fx][fy] == 'X'))) && i == f)
+                l = CheckWinner(fx, fy, i, k + 1, Player);
+            if (l != 0)
+            	return l;
+            l = max(CheckWinner(fx, fy, i, mp[fx][fy] == 'O' ? 1 : 0, 1), CheckWinner(fx, fy, i, mp[fx][fy] == 'X' ? 1 : 0, 2));
             if (l != 0)
                 return l;
+        }
+    }*/
+    for (int i = 1; i <= n; i++)
+    {
+        for (int j = 1; j <= n; j++)
+        {
+            if (mp[i][j] == mp[i][j + 1] && mp[i][j] == mp[i][j + 2] && mp[i][j] == mp[i][j + 3] && mp[i][j] == mp[i][j + 4] && mp[i][j] != '*') //transverse
+                return mp[i][j] == 'O' ? 1 : 2;
+            if (mp[i][j] == mp[i + 1][j] && mp[i][j] == mp[i + 2][j] && mp[i][j] == mp[i + 3][j] && mp[i][j] == mp[i + 4][j] && mp[i][j] != '*') //vertical
+                return mp[i][j] == 'O' ? 1 : 2;
+            if (mp[i][j] == mp[i + 1][j + 1] && mp[i][j] == mp[i + 2][j + 2] && mp[i][j] == mp[i + 3][j + 3] && mp[i][j] == mp[i + 4][j + 4] && mp[i][j] != '*') //skimming
+                return mp[i][j] == 'O' ? 1 : 2;
+            if (i - 4 >= 1 && j - 4 >= 1)
+                if (mp[i][j] == mp[i - 1][j - 1] && mp[i][j] == mp[i - 2][j - 2] && mp[i][j] == mp[i - 3][j - 3] && mp[i][j] == mp[i - 4][j - 4] && mp[i][j] != '*') //suppress
+                    return mp[i][j] == 'O' ? 1 : 2;
         }
     }
     return 0;
@@ -185,7 +202,7 @@ bool GoBang::StartGame()
         Player = !Player;
         Print();
         Check();
-        int k = CheckWinner(1,1,0,0,3);
+        int k = CheckWinner();
         switch (k)
         {
         case 1:
@@ -202,7 +219,7 @@ GoBang gb;
 
 int main()
 {
-    gb.Init(15);
+    gb.Init(17); //It must to be a odd number. For example 15, 17
     gb.StartGame();
     return 0;
 }
