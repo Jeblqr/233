@@ -10,7 +10,7 @@ using namespace std;
 
 class GoBang
 {
-    wchar_t mp[Max][Max];
+    char mp[Max][Max];
     int n, x, y, zx, zy;
     bool Player;
     int CheckWinner();
@@ -44,7 +44,7 @@ void GoBang::SetN(int k)
 
 void GoBang::CaseIt(int x, int y)
 {
-    mp[x][y] = Player ? '-' : '+';
+    mp[y][x] = Player ? '-' : '+';
 }
 
 int GoBang::CheckWinner()
@@ -95,43 +95,49 @@ void GoBang::SetMapCase(int x, int y)
 
 void GoBang::Check()
 {
-    int k = GetMove();
-    Player = !Player;
-    while (k != 5) ////down
+    while (true)
     {
-        switch (k)
+        int k = GetMove();
+        Player = !Player;
+        while (k != 5) ////down
         {
-        case 1: //left
-            if (x - 1 >= 1)
-                x = x - 1, SetMapCase(x, y);
-            k = GetMove();
-            break;
-        case 2: //up
-            if (y - 1 >= 1)
-                y = y - 1, SetMapCase(x, y);
-            k = GetMove();
-            break;
-        case 3: //right
-            if (x + 1 <= n)
-                x = x + 1, SetMapCase(x, y);
-            k = GetMove();
-            break;
-        case 4: //low
-            if (y + 1 <= n)
-                y = y + 1, SetMapCase(x, y);
-            k = GetMove();
-            break;
+            switch (k)
+            {
+            case 1: //left
+                if (x - 1 >= 1)
+                    x = x - 1, SetMapCase(x, y);
+                k = GetMove();
+                break;
+            case 2: //up
+                if (y - 1 >= 1)
+                    y = y - 1, SetMapCase(x, y);
+                k = GetMove();
+                break;
+            case 3: //right
+                if (x + 1 <= n)
+                    x = x + 1, SetMapCase(x, y);
+                k = GetMove();
+                break;
+            case 4: //low
+                if (y + 1 <= n)
+                    y = y + 1, SetMapCase(x, y);
+                k = GetMove();
+                break;
+            }
+        }
+        if (mp[x][y] == '*')
+        {
+            CaseIt(x, y);
+            return;
         }
     }
-    if (mp[x][y] == '*')
-        CaseIt(x, y), Print();
 }
 
 int GoBang::GetMove()
 {
     wchar_t c;
     c = getch();
-    if (c == 15)
+    if (c == 13)
         return 5;
     c = getch();
     switch (c)
@@ -154,6 +160,7 @@ bool GoBang::StartGame()
     int k;
     while (true)
     {
+        x = zx, y = zy;
         Print();
         Check();
         k = CheckWinner();
