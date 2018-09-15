@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <cstring>
+#include<queue>
 #include <cstdlib>
 #include <cstdio>
 #include <algorithm>
@@ -14,7 +15,7 @@ class GoBang
     int n, x, y, zx, zy;
     int MoveX[5], MoveY[5];
     bool Player;
-    int CheckWinner(int x, int y, int f, int k, int Player);
+    int CheckWinner(int x,int y,int f,int k,int Player);
     int GetMove();
     void Check();
     void Print();
@@ -54,10 +55,10 @@ void GoBang::CaseIt(int x, int y)
     mp[y][x] = Player ? 'X' : 'O';
 }
 
-int GoBang::CheckWinner(int x, int y, int f, int k, int Player)
+int GoBang::CheckWinner(int x,int y,int f,int k,int Player)
 {
     if (k == 5)
-        return Player;
+        return Player+1;
     for (int i = 1; i <= 3; i++)
     {
         int fx = x + MoveX[i], fy = y + MoveY[i];
@@ -178,14 +179,13 @@ int GoBang::GetMove()
 
 bool GoBang::StartGame()
 {
-    int k;
     while (true)
     {
         x = zx, y = zy;
         Player = !Player;
         Print();
         Check();
-        k = CheckWinner(1, 1, 0, 0, 2);
+        int k = CheckWinner(1,1,0,0,3);
         switch (k)
         {
         case 1:
