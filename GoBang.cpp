@@ -12,9 +12,9 @@ class GoBang
 {
     char mp[Max][Max];
     int n, x, y, zx, zy;
-    int MoveX[5],MoveY[5];
+    int MoveX[5], MoveY[5];
     bool Player;
-    int CheckWinner();
+    int CheckWinner(int x, int y, int f, int k, int Player);
     int GetMove();
     void Check();
     void Print();
@@ -30,12 +30,12 @@ class GoBang
 
 void GoBang::Init(int n)
 {
-	MoveX[1]=1;
-	MoveX[2]=1;
-	MoveX[3]=0;
-	MoveY[1]=0;
-	MoveY[2]=-1;
-	MoveY[3]=-1;
+    MoveX[1] = 1;
+    MoveX[2] = 1;
+    MoveX[3] = 0;
+    MoveY[1] = 0;
+    MoveY[2] = -1;
+    MoveY[3] = -1;
     SetN(n);
     memset(mp, '*', sizeof mp);
     Player = 1;
@@ -54,9 +54,24 @@ void GoBang::CaseIt(int x, int y)
     mp[y][x] = Player ? 'X' : 'O';
 }
 
-int GoBang::CheckWinner()
+int GoBang::CheckWinner(int x, int y, int f, int k, int Player)
 {
-	
+    if (k == 5)
+        return Player;
+    for (int i = 1; i <= 3; i++)
+    {
+        int fx = x + MoveX[i], fy = y + MoveY[i];
+        if (fx >= 1 && fx <= n && fy >= 1 && fy <= n)
+        {
+            int l;
+            if (((Player == 0 && mp[fx][fy] == 'O') || ((Player == 1 && mp[fx][fy] == 'X'))) && i == f)
+                l = CheckWinner(fx, fy, f, k + 1, Player);
+            else
+                l = CheckWinner(fx, fy, i, 0, !Player);
+            if (l != 0)
+                return l;
+        }
+    }
     return 0;
 }
 
@@ -171,7 +186,7 @@ bool GoBang::StartGame()
         Player = !Player;
         Print();
         Check();
-        k = CheckWinner();
+        k = CheckWinner(1, 1, 0, 0, 2);
         switch (k)
         {
         case 1:
