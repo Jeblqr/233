@@ -84,8 +84,8 @@ int GoBang::CheckWinner()
                 return mp[i][j] == 'O' ? 1 : 2;
             if (mp[i][j] == mp[i + 1][j + 1] && mp[i][j] == mp[i + 2][j + 2] && mp[i][j] == mp[i + 3][j + 3] && mp[i][j] == mp[i + 4][j + 4] && mp[i][j] != '*') //skimming
                 return mp[i][j] == 'O' ? 1 : 2;
-            if (i - 4 >= 1 && j - 4 >= 1)
-                if (mp[i][j] == mp[i - 1][j - 1] && mp[i][j] == mp[i - 2][j - 2] && mp[i][j] == mp[i - 3][j - 3] && mp[i][j] == mp[i - 4][j - 4] && mp[i][j] != '*') //suppress
+            if (i - 4 >= 1)
+                if (mp[i][j] == mp[i - 1][j + 1] && mp[i][j] == mp[i - 2][j + 2] && mp[i][j] == mp[i - 3][j + 3] && mp[i][j] == mp[i - 4][j + 4] && mp[i][j] != '*') //suppress
                     return mp[i][j] == 'O' ? 1 : 2;
         }
     }
@@ -196,12 +196,13 @@ int GoBang::GetMove()
 
 bool GoBang::StartGame()
 {
+    Print();
     while (true)
     {
         x = zx, y = zy;
         Player = !Player;
-        Print();
         Check();
+        Print();
         int k = CheckWinner();
         switch (k)
         {
