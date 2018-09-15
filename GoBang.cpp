@@ -9,7 +9,6 @@
 #define Max 1000
 using namespace std;
 
-
 class GoBang
 {
     char mp[Max][Max];
@@ -23,11 +22,11 @@ class GoBang
     void SetMapCase(int x, int y);
     void CaseIt(int x, int y);
     void Print(int x, int y);
+    void SetN(int k);
 
   public:
     void Init(int n);
-    void SetN(int k);
-    bool StartGame();
+    int StartGame();
 };
 
 void GoBang::Init(int n)
@@ -177,7 +176,7 @@ int GoBang::GetMove()
     return 2147483647;
 }
 
-bool GoBang::StartGame()
+int GoBang::StartGame()
 {
     Print();
     while (true)
@@ -191,10 +190,10 @@ bool GoBang::StartGame()
         {
         case 1:
             cout << "The Player1 Got Win!";
-            return 0;
+            return 1;
         case 2:
             cout << "The Player2 Got Win!";
-            return 1;
+            return 2;
         }
     }
 }
