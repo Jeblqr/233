@@ -125,7 +125,7 @@ void GoBang::Check()
                 break;
             }
         }
-        if (mp[x][y] == '*')
+        if (mp[y][x] == '*')
         {
             CaseIt(x, y);
             return;
