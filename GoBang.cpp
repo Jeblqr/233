@@ -176,7 +176,7 @@ int GoBang::GetMove()
 {
     wchar_t c;
     c = getch();
-    if (c == 13)
+    if (c == 13) //down
         return 5;
     c = getch();
     switch (c)
@@ -189,8 +189,6 @@ int GoBang::GetMove()
         return 3;
     case 80: //low
         return 4;
-    case 0xD: //down
-        return 5;
     }
 }
 
