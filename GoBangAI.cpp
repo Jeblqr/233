@@ -40,6 +40,7 @@ void GoBang::Init(int n, int k)
     this->n = n, this->k = k;
     memset(mp, '*', sizeof mp);
     Player = 1;
+    zx = zy = n / 2 + 1;
     x = y = lx = ly = zx;
 }
 
@@ -50,13 +51,13 @@ void GoBang::CaseIt(int x, int y)
 
 GoBang::Node GoBang::MiniMax(Node p, int x, int y, bool bj)
 {
-    int k = CheckWinner();
-    if (k == 1)
+    int g = CheckWinner();
+    if (g == 1)
     {
         p.alpha++;
         return p;
     }
-    if (k == 2)
+    if (g == 2)
     {
         p.beta++;
         return p;
@@ -71,7 +72,7 @@ GoBang::Node GoBang::MiniMax(Node p, int x, int y, bool bj)
                 if (bj == 0)
                 {
                     mp[i][j] = 'O';
-                    node = MiniMax(p, x, y, bj);
+                    node = MiniMax(p, x, y, !bj);
                     mp[i][j] = '*';
                     if (node.alpha > df.alpha)
                         df = node, df.x = i, df.y = j;
@@ -79,7 +80,7 @@ GoBang::Node GoBang::MiniMax(Node p, int x, int y, bool bj)
                 else
                 {
                     mp[i][j] = 'X';
-                    node = MiniMax(p, x, y, bj);
+                    node = MiniMax(p, x, y, !bj);
                     mp[i][j] = '*';
                     if (node.beta > df.beta)
                         df = node, df.x = i, df.y = j;
@@ -155,7 +156,7 @@ void GoBang::Print(int x, int y)
 }
 void GoBang::AI()
 {
-    Node node = MiniMax(Node{}, lx, ly, Player);
+    Node node = MiniMax(Node{lx, ly, -1, -1}, lx, ly, Player);
     CaseIt(node.x, node.y);
 }
 
@@ -255,7 +256,7 @@ GoBang gb;
 
 int main()
 {
-    gb.Init(15, 3); // It must to be a odd number. For example 15, 17
+    gb.Init(15, 5); // It must to be a odd number. For example 15, 17
     gb.StartGame();
     return 0;
 }
