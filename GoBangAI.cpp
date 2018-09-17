@@ -1,0 +1,272 @@
+#pragma GCC optimize(2)
+#define NODEGUG
+#include <algorithm>
+#include <conio.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <iostream>
+#include <queue>
+#include <string>
+#define Max 1000
+using namespace std;
+
+class GoBang
+{
+    struct Node
+    {
+        int x, y, alpha, beta;
+    };
+    char mp[Max][Max];
+    int n, x, y, zx, zy, lx, ly;
+    int MoveX[5], MoveY[5];
+    bool Player;
+    int CheckWinner();
+    int GetMove();
+    void Check();
+    void Print();
+    void SetMapCase(int x, int y);
+    void CaseIt(int x, int y);
+    void Print(int x, int y);
+    void SetN(int k);
+    Node MiniMax(Node p, int x, int y, bool bj);
+    void AI();
+
+  public:
+    void Init(int n);
+    int StartGame();
+};
+
+void GoBang::Init(int n)
+{
+    MoveX[1] = 1;
+    MoveX[2] = 1;
+    MoveX[3] = 0;
+    MoveY[1] = 0;
+    MoveY[2] = 1;
+    MoveY[3] = 1;
+    SetN(n);
+    memset(mp, '*', sizeof mp);
+    Player = 1;
+    x = y = lx = ly = zx;
+}
+
+void GoBang::SetN(int k)
+{
+    n = k;
+    zx = zy = n / 2;
+    zx++, zy++;
+}
+
+void GoBang::CaseIt(int x, int y) { mp[y][x] = Player ? 'X' : 'O'; }
+
+GoBang::Node GoBang::MiniMax(Node p, int x, int y, bool bj)
+{
+    int k = CheckWinner();
+    if (k == 1)
+    {
+        p.alpha++;
+        return p;
+    }
+    if (k == 2)
+    {
+        p.beta++;
+        return p;
+    }
+    Node df, node;
+    for (int i = x - 5; i <= x + 5; i++)
+    {
+        for (int j = y - 5; j <= y + 5; j++)
+        {
+            if (mp[i][j] == '*')
+            {
+                if (bj == 0)
+                {
+                    mp[i][j] = 'O';
+                    node = MiniMax(p, x, y, bj);
+                    mp[i][j] = '*';
+                    if (node.alpha > df.alpha)
+                        df = node, node.x = i, node.y = i;
+                }
+                else
+                {
+                    mp[i][j] = 'X';
+                    node = MiniMax(p, x, y, bj);
+                    mp[i][j] = '*';
+                    if (node.alpha > df.beta)
+                        df = node, node.x = i, node.y = i;
+                }
+            }
+        }
+    }
+    node.alpha += p.alpha;
+    node.beta += p.beta;
+    return node;
+}
+
+int GoBang::CheckWinner()
+{
+    for (int i = 1; i <= n; i++)
+    {
+        for (int j = 1; j <= n; j++)
+        {
+            if (mp[i][j] == mp[i][j + 1] && mp[i][j] == mp[i][j + 2] &&
+                mp[i][j] == mp[i][j + 3] && mp[i][j] == mp[i][j + 4] &&
+                mp[i][j] != '*') // transverse
+                return mp[i][j] == 'O' ? 1 : 2;
+            if (mp[i][j] == mp[i + 1][j] && mp[i][j] == mp[i + 2][j] &&
+                mp[i][j] == mp[i + 3][j] && mp[i][j] == mp[i + 4][j] &&
+                mp[i][j] != '*') // vertical
+                return mp[i][j] == 'O' ? 1 : 2;
+            if (mp[i][j] == mp[i + 1][j + 1] && mp[i][j] == mp[i + 2][j + 2] &&
+                mp[i][j] == mp[i + 3][j + 3] && mp[i][j] == mp[i + 4][j + 4] &&
+                mp[i][j] != '*') // skimming
+                return mp[i][j] == 'O' ? 1 : 2;
+            if (i - 4 >= 1)
+                if (mp[i][j] == mp[i - 1][j + 1] && mp[i][j] == mp[i - 2][j + 2] &&
+                    mp[i][j] == mp[i - 3][j + 3] && mp[i][j] == mp[i - 4][j + 4] &&
+                    mp[i][j] != '*') // suppress
+                    return mp[i][j] == 'O' ? 1 : 2;
+        }
+    }
+    return 0;
+}
+
+void GoBang::Print()
+{
+    system("cls");
+    for (int i = 1; i <= n; i++)
+    {
+        for (int j = 1; j <= n; j++)
+        {
+            if (zx - 1 == j && i == zy)
+                printf("%c<", mp[i][j]);
+            else if (zx == j && i == zy)
+                printf("%c>", mp[i][j]);
+            else
+                printf("%c ", mp[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+void GoBang::Print(int x, int y)
+{
+    system("cls");
+    for (int i = 1; i <= n; i++)
+    {
+        for (int j = 1; j <= n; j++)
+        {
+            if (x - 1 == j & i == y)
+                printf("%c<", mp[i][j]);
+            else if (x == j && i == y)
+                printf("%c>", mp[i][j]);
+            else
+                printf("%c ", mp[i][j]);
+        }
+        printf("\n");
+    }
+}
+void GoBang::AI()
+{
+    Node node = MiniMax(Node{}, lx, ly, 0);
+    CaseIt(node.x, node.y);
+}
+
+void GoBang::SetMapCase(int x, int y) { Print(x, y); }
+
+void GoBang::Check()
+{
+    while (true)
+    {
+        int k = GetMove();
+        while (k != 5) ////down
+        {
+            switch (k)
+            {
+            case 1: // left
+                if (x - 1 >= 1)
+                    x = x - 1, SetMapCase(x, y);
+                k = GetMove();
+                break;
+            case 2: // up
+                if (y - 1 >= 1)
+                    y = y - 1, SetMapCase(x, y);
+                k = GetMove();
+                break;
+            case 3: // right
+                if (x + 1 <= n)
+                    x = x + 1, SetMapCase(x, y);
+                k = GetMove();
+                break;
+            case 4: // low
+                if (y + 1 <= n)
+                    y = y + 1, SetMapCase(x, y);
+                k = GetMove();
+                break;
+            }
+        }
+        if (mp[y][x] == '*')
+        {
+            CaseIt(x, y);
+            lx = x, ly = y;
+            return;
+        }
+    }
+}
+
+int GoBang::GetMove()
+{
+    int c;
+    c = getch();
+    if (c == 13) // down
+        return 5;
+    c = getch();
+    switch (c)
+    {
+    case 75: // left
+        return 1;
+    case 72: // up
+        return 2;
+    case 77: // right
+        return 3;
+    case 80: // low
+        return 4;
+    }
+    return 2147483647;
+}
+
+int GoBang::StartGame()
+{
+    Print();
+    Node node;
+    while (true)
+    {
+        x = zx, y = zy;
+        Player = !Player;
+        if (Player == 0)
+            AI();
+        else
+            Check();
+        Print();
+        int k = CheckWinner();
+        switch (k)
+        {
+        case 1:
+            cout << "The Player1 Got Win!";
+            return 1;
+        case 2:
+            cout << "The Player2 Got Win!";
+            return 2;
+        }
+    }
+}
+
+GoBang gb;
+
+int main()
+{
+    gb.Init(17); // It must to be a odd number. For example 15, 17
+    gb.StartGame();
+    return 0;
+}
