@@ -27,7 +27,7 @@ class GoBang
     void SetMapCase(int x, int y);
     void CaseIt(int x, int y);
     void Print(int x, int y);
-    Node MiniMax(Node p, int x, int y, bool bj);
+    Node MiniMax(Node p, int x, int y, int a, int b, bool bj);
     void AI();
 
   public:
@@ -49,7 +49,7 @@ void GoBang::CaseIt(int x, int y)
     mp[y][x] = Player ? 'X' : 'O';
 }
 
-GoBang::Node GoBang::MiniMax(Node p, int x, int y, bool bj)
+GoBang::Node GoBang::MiniMax(Node p, int x, int y, int a, int b, bool bj)
 {
     int g = CheckWinner();
     if (g == 1)
@@ -63,16 +63,16 @@ GoBang::Node GoBang::MiniMax(Node p, int x, int y, bool bj)
         return p;
     }
     Node df, node;
-    for (int i = (x - k >= 1 ? x - k : 1); i <= (x + k <= n ? x + k : n); i++)
+    for (int i = a; i <= (x + k <= n ? x + k : n); i++)
     {
-        for (int j = (y - k >= 1 ? y - k : 1); j <= (y + k <= n ? y + k : n); j++)
+        for (int j = b; j <= (y + k <= n ? y + k : n); j++)
         {
             if (mp[i][j] == '*')
             {
                 if (bj == 0)
                 {
                     mp[i][j] = 'O';
-                    node = MiniMax(p, x, y, !bj);
+                    node = MiniMax(p, x, y, i, j, !bj);
                     mp[i][j] = '*';
                     if (node.alpha > df.alpha)
                         df = node, df.x = i, df.y = j;
@@ -80,7 +80,7 @@ GoBang::Node GoBang::MiniMax(Node p, int x, int y, bool bj)
                 else
                 {
                     mp[i][j] = 'X';
-                    node = MiniMax(p, x, y, !bj);
+                    node = MiniMax(p, x, y, i, j, !bj);
                     mp[i][j] = '*';
                     if (node.beta > df.beta)
                         df = node, df.x = i, df.y = j;
@@ -156,7 +156,7 @@ void GoBang::Print(int x, int y)
 }
 void GoBang::AI()
 {
-    Node node = MiniMax(Node{lx, ly, -1, -1}, lx, ly, Player);
+    Node node = MiniMax(Node{lx, ly, 0, 0}, lx, ly, (lx - k >= 1 ? lx - k : 1), (ly - k >= 1 ? ly - k : 1), Player);
     CaseIt(node.x, node.y);
 }
 
