@@ -62,10 +62,10 @@ GoBang::Node GoBang::MiniMax(Node p, int x, int y, int a, int b, bool bj)
         p.beta++;
         return p;
     }
-    Node df, node;
-    for (int i = a; i <= (x + k <= n ? x + k : n); i++)
+    Node node;
+    for (int i = (a - 1 >= 1 ? a - 1 : a); i <= (x + k <= n ? x + k : n); i++)
     {
-        for (int j = b; j <= (y + k <= n ? y + k : n); j++)
+        for (int j = (b - 1 >= 1 ? b - 1 : b); j <= (y + k <= n ? y + k : n); j++)
         {
             if (mp[i][j] == '*')
             {
@@ -74,21 +74,21 @@ GoBang::Node GoBang::MiniMax(Node p, int x, int y, int a, int b, bool bj)
                     mp[i][j] = 'O';
                     node = MiniMax(p, x, y, i, j, !bj);
                     mp[i][j] = '*';
-                    if (node.alpha > df.alpha)
-                        df = node, df.x = i, df.y = j;
+                    if (node.alpha > p.alpha)
+                        p = node, p.x = i, p.y = j;
                 }
                 else
                 {
                     mp[i][j] = 'X';
                     node = MiniMax(p, x, y, i, j, !bj);
                     mp[i][j] = '*';
-                    if (node.beta > df.beta)
-                        df = node, df.x = i, df.y = j;
+                    if (node.beta > p.beta)
+                        p = node, p.x = i, p.y = j;
                 }
             }
         }
     }
-    return df;
+    return p;
 }
 
 int GoBang::CheckWinner()
@@ -156,7 +156,7 @@ void GoBang::Print(int x, int y)
 }
 void GoBang::AI()
 {
-    Node node = MiniMax(Node{lx, ly, 0, 0}, lx, ly, (lx - k >= 1 ? lx - k : 1), (ly - k >= 1 ? ly - k : 1), Player);
+    Node node = MiniMax(Node{lx, ly, -1, -1}, lx, ly, (lx - k >= 1 ? lx - k : 1), (ly - k >= 1 ? ly - k : 1), Player);
     CaseIt(node.x, node.y);
 }
 
@@ -234,7 +234,7 @@ int GoBang::StartGame()
     {
         x = zx, y = zy;
         Player = !Player;
-        if (Player == 1)
+        if (Player == 0)
             AI();
         else
             Check();
@@ -256,7 +256,7 @@ GoBang gb;
 
 int main()
 {
-    gb.Init(15, 5); // It must to be a odd number. For example 15, 17
+    gb.Init(15, 3); // It must to be a odd number. For example 15, 17
     gb.StartGame();
     return 0;
 }
