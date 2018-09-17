@@ -93,7 +93,7 @@ GoBang::Node GoBang::MiniMax(Node p, int x, int y, bool bj)
                     mp[i][j] = 'X';
                     node = MiniMax(p, x, y, bj);
                     mp[i][j] = '*';
-                    if (node.alpha > df.beta)
+                    if (node.beta > df.beta)
                         df = node, node.x = i, node.y = i;
                 }
             }
@@ -169,11 +169,14 @@ void GoBang::Print(int x, int y)
 }
 void GoBang::AI()
 {
-    Node node = MiniMax(Node{}, lx, ly, 0);
+    Node node = MiniMax(Node{}, lx, ly, Player);
     CaseIt(node.x, node.y);
 }
 
-void GoBang::SetMapCase(int x, int y) { Print(x, y); }
+void GoBang::SetMapCase(int x, int y)
+{
+    Print(x, y);
+}
 
 void GoBang::Check()
 {
@@ -244,7 +247,7 @@ int GoBang::StartGame()
     {
         x = zx, y = zy;
         Player = !Player;
-        if (Player == 0)
+        if (Player == 1)
             AI();
         else
             Check();
