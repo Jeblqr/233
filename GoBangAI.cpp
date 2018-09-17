@@ -74,9 +74,9 @@ GoBang::Node GoBang::MiniMax(Node p, int x, int y, bool bj)
         return p;
     }
     Node df, node;
-    for (int i = x - 5; i <= x + 5; i++)
+    for (int i = x - 3; i <= x + 3; i++)
     {
-        for (int j = y - 5; j <= y + 5; j++)
+        for (int j = y - 3; j <= y + 3; j++)
         {
             if (mp[i][j] == '*')
             {
@@ -86,7 +86,7 @@ GoBang::Node GoBang::MiniMax(Node p, int x, int y, bool bj)
                     node = MiniMax(p, x, y, bj);
                     mp[i][j] = '*';
                     if (node.alpha > df.alpha)
-                        df = node, node.x = i, node.y = i;
+                        df = node, df.x = i, df.y = j;
                 }
                 else
                 {
@@ -94,12 +94,12 @@ GoBang::Node GoBang::MiniMax(Node p, int x, int y, bool bj)
                     node = MiniMax(p, x, y, bj);
                     mp[i][j] = '*';
                     if (node.beta > df.beta)
-                        df = node, node.x = i, node.y = i;
+                        df = node, df.x = i, df.y = j;
                 }
             }
         }
     }
-    return node;
+    return df;
 }
 
 int GoBang::CheckWinner()
