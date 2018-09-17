@@ -99,8 +99,6 @@ GoBang::Node GoBang::MiniMax(Node p, int x, int y, bool bj)
             }
         }
     }
-    node.alpha += p.alpha;
-    node.beta += p.beta;
     return node;
 }
 
