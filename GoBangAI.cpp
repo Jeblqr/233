@@ -256,7 +256,7 @@ GoBang gb;
 
 int main()
 {
-    gb.Init(15, 5); // It must to be a odd number. For example 15, 17
+    gb.Init(15, 2); // It must to be a odd number. For example 15, 17
     gb.StartGame();
     return 0;
 }
