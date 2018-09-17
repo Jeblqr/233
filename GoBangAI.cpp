@@ -1,5 +1,5 @@
-#pragma GCC optimize(2)
-#define NODEGUG
+//#pragma GCC optimize(2)
+//#define NODEGUG
 #include <algorithm>
 #include <conio.h>
 #include <cstdio>
@@ -18,8 +18,7 @@ class GoBang
         int x, y, alpha, beta;
     };
     char mp[Max][Max];
-    int n, x, y, zx, zy, lx, ly;
-    int MoveX[5], MoveY[5];
+    int n, x, y, zx, zy, lx, ly, k;
     bool Player;
     int CheckWinner();
     int GetMove();
@@ -28,37 +27,26 @@ class GoBang
     void SetMapCase(int x, int y);
     void CaseIt(int x, int y);
     void Print(int x, int y);
-    void SetN(int k);
     Node MiniMax(Node p, int x, int y, bool bj);
     void AI();
 
   public:
-    void Init(int n);
+    void Init(int n, int k);
     int StartGame();
 };
 
-void GoBang::Init(int n)
+void GoBang::Init(int n, int k)
 {
-    MoveX[1] = 1;
-    MoveX[2] = 1;
-    MoveX[3] = 0;
-    MoveY[1] = 0;
-    MoveY[2] = 1;
-    MoveY[3] = 1;
-    SetN(n);
+    this->n = n, this->k = k;
     memset(mp, '*', sizeof mp);
     Player = 1;
     x = y = lx = ly = zx;
 }
 
-void GoBang::SetN(int k)
+void GoBang::CaseIt(int x, int y)
 {
-    n = k;
-    zx = zy = n / 2;
-    zx++, zy++;
+    mp[y][x] = Player ? 'X' : 'O';
 }
-
-void GoBang::CaseIt(int x, int y) { mp[y][x] = Player ? 'X' : 'O'; }
 
 GoBang::Node GoBang::MiniMax(Node p, int x, int y, bool bj)
 {
@@ -74,9 +62,9 @@ GoBang::Node GoBang::MiniMax(Node p, int x, int y, bool bj)
         return p;
     }
     Node df, node;
-    for (int i = x - 3; i <= x + 3; i++)
+    for (int i = (x - k >= 1 ? x - k : 1); i <= (x + k <= n ? x + k : n); i++)
     {
-        for (int j = y - 3; j <= y + 3; j++)
+        for (int j = (y - k >= 1 ? y - k : 1); j <= (y + k <= n ? y + k : n); j++)
         {
             if (mp[i][j] == '*')
             {
@@ -267,7 +255,7 @@ GoBang gb;
 
 int main()
 {
-    gb.Init(17); // It must to be a odd number. For example 15, 17
+    gb.Init(15, 3); // It must to be a odd number. For example 15, 17
     gb.StartGame();
     return 0;
 }
