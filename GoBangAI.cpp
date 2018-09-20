@@ -142,20 +142,20 @@ GoBang::Score GoBang::CheckScore(bool Player)
         	if (mp[i][j] == mp[i][j + 1] && mp[i][j] == mp[i][j + 2] &&
                 mp[i][j] == mp[i][j + 3] && mp[i][j] == mp[i][j + 4] &&
                 mp[i][j] == (Player==0?'O':'X')) // transverse
-                score.Win=1,score.score+=100;
+                score.Win=1,score.score+=1000;
             if (mp[i][j] == mp[i + 1][j] && mp[i][j] == mp[i + 2][j] &&
                 mp[i][j] == mp[i + 3][j] && mp[i][j] == mp[i + 4][j] &&
                 mp[i][j] == (Player==0?'O':'X')) // vertical
-                score.Win=1,score.score+=100;
+                score.Win=1,score.score+=1000;
             if (mp[i][j] == mp[i + 1][j + 1] && mp[i][j] == mp[i + 2][j + 2] &&
                 mp[i][j] == mp[i + 3][j + 3] && mp[i][j] == mp[i + 4][j + 4] &&
                 mp[i][j] == (Player==0?'O':'X')) // skimming
-                score.Win=1,score.score+=100;
+                score.Win=1,score.score+=1000;
             if (i - 4 >= 1)
                 if (mp[i][j] == mp[i - 1][j + 1] && mp[i][j] == mp[i - 2][j + 2] &&
                     mp[i][j] == mp[i - 3][j + 3] && mp[i][j] == mp[i - 4][j + 4] &&
                     mp[i][j] == (Player==0?'O':'X')) // suppress
-                    score.Win=1,score.score+=100;
+                    score.Win=1,score.score+=1000;
             if (mp[i][j] == mp[i][j + 1] && mp[i][j] == mp[i][j + 2] &&
                 mp[i][j] == mp[i][j + 3] && mp[i][j] == (Player==0?'O':'X')) // transverse
                 score.score+=80;
