@@ -20,6 +20,7 @@ class GoBang
     char mp[Max][Max];
     int n, x, y, zx, zy, lx, ly, k;
     bool Player;
+    int CheckFour();
     int CheckWinner();
     int GetMove();
     void Check();
@@ -27,7 +28,7 @@ class GoBang
     void SetMapCase(int x, int y);
     void CaseIt(int x, int y);
     void Print(int x, int y);
-    Node MiniMax(Node p, int x, int y, int a, int b, bool bj);
+    Node MiniMax(Node p, int x, int y, bool bj);
     void AI();
 
   public:
@@ -49,38 +50,43 @@ void GoBang::CaseIt(int x, int y)
     mp[y][x] = Player ? 'X' : 'O';
 }
 
-GoBang::Node GoBang::MiniMax(Node p, int x, int y, int a, int b, bool bj)
+GoBang::Node GoBang::MiniMax(Node p, int x, int y, bool bj)
 {
     int g = CheckWinner();
     if (g == 1)
     {
-        p.alpha++;
+        p.alpha+=5;
         return p;
     }
     if (g == 2)
     {
-        p.beta++;
+        p.beta+=5;
         return p;
     }
+    g = CheckFour();
+    if (g == 1)
+        p.alpha+=3;
+    if (g == 2)
+        p.beta+=3;
     Node node;
-    for (int i = (a - 1 >= 1 ? a - 1 : a); i <= (x + k <= n ? x + k : n); i++)
+    for (int i = (x - k >= 1 ? x - k : 1); i <= (x + k <= n ? x + k : n); i++)
     {
-        for (int j = (b - 1 >= 1 ? b - 1 : b); j <= (y + k <= n ? y + k : n); j++)
+        for (int j = (y - k >= 1 ? y - k : 1); j <= (y + k <= n ? y + k : n); j++)
         {
             if (mp[i][j] == '*')
             {
                 if (bj == 0)
                 {
                     mp[i][j] = 'O';
-                    node = MiniMax(p, x, y, i, j, !bj);
+                    node = MiniMax(p, x, y, !bj);
                     mp[i][j] = '*';
                     if (node.alpha > p.alpha)
                         p = node, p.x = i, p.y = j;
                 }
-                else
+                if (bj == 1)
                 {
                     mp[i][j] = 'X';
-                    node = MiniMax(p, x, y, i, j, !bj);
+                    node = MiniMax(p, x, y, !bj);
                     mp[i][j] = '*';
                     if (node.beta > p.beta)
                         p = node, p.x = i, p.y = j;
@@ -113,6 +119,30 @@ int GoBang::CheckWinner()
                 if (mp[i][j] == mp[i - 1][j + 1] && mp[i][j] == mp[i - 2][j + 2] &&
                     mp[i][j] == mp[i - 3][j + 3] && mp[i][j] == mp[i - 4][j + 4] &&
                     mp[i][j] != '*') // suppress
+                    return mp[i][j] == 'O' ? 1 : 2;
+        }
+    }
+    return 0;
+}
+
+int GoBang::CheckFour()
+{
+	for (int i = 1; i <= n; i++)
+    {
+        for (int j = 1; j <= n; j++)
+        {
+            if (mp[i][j] == mp[i][j + 1] && mp[i][j] == mp[i][j + 2] &&
+                mp[i][j] == mp[i][j + 3] && mp[i][j] != '*') // transverse
+                return mp[i][j] == 'O' ? 1 : 2;
+            if (mp[i][j] == mp[i + 1][j] && mp[i][j] == mp[i + 2][j] &&
+                mp[i][j] == mp[i + 3][j] && mp[i][j] != '*') // vertical
+                return mp[i][j] == 'O' ? 1 : 2;
+            if (mp[i][j] == mp[i + 1][j + 1] && mp[i][j] == mp[i + 2][j + 2] &&
+                mp[i][j] == mp[i + 3][j + 3] && mp[i][j] != '*') // skimming
+                return mp[i][j] == 'O' ? 1 : 2;
+            if (i - 4 >= 1)
+                if (mp[i][j] == mp[i - 1][j + 1] && mp[i][j] == mp[i - 2][j + 2] &&
+                    mp[i][j] == mp[i - 3][j + 3] && mp[i][j] != '*') // suppress
                     return mp[i][j] == 'O' ? 1 : 2;
         }
     }
@@ -156,7 +186,7 @@ void GoBang::Print(int x, int y)
 }
 void GoBang::AI()
 {
-    Node node = MiniMax(Node{lx, ly, -1, -1}, lx, ly, (lx - k >= 1 ? lx - k : 1), (ly - k >= 1 ? ly - k : 1), Player);
+    Node node = MiniMax(Node{lx, ly, 0, 0}, lx, ly, 1);
     CaseIt(node.x, node.y);
 }
 
@@ -234,7 +264,7 @@ int GoBang::StartGame()
     {
         x = zx, y = zy;
         Player = !Player;
-        if (Player == 0)
+        if (Player == 1)
             AI();
         else
             Check();
@@ -256,7 +286,7 @@ GoBang gb;
 
 int main()
 {
-    gb.Init(15, 3); // It must to be a odd number. For example 15, 17
+    gb.Init(5, 3); // It must to be a odd number. For example 15, 17
     gb.StartGame();
     return 0;
 }
