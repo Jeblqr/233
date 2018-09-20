@@ -17,10 +17,14 @@ class GoBang
     {
         int x, y, alpha, beta;
     };
+    struct Score
+    {
+    	bool Win,score;
+    };
     char mp[Max][Max];
     int n, x, y, zx, zy, lx, ly, k;
     bool Player;
-    int CheckFour();
+    Score CheckScore(bool Player);
     int CheckWinner();
     int GetMove();
     void Check();
@@ -52,23 +56,20 @@ void GoBang::CaseIt(int x, int y)
 
 GoBang::Node GoBang::MiniMax(Node p, int x, int y, bool bj)
 {
-    int g = CheckWinner();
-    if (g == 1)
+    Score g = CheckScore(!Player);
+    if (g.Win==1)
     {
-        p.alpha+=5;
-        return p;
+    	if (!bj==0)
+    		p.alpha+=g.score;
+    	else
+    		p.beta+=g.score;
+    	return p;
     }
-    if (g == 2)
-    {
-        p.beta+=5;
-        return p;
-    }
-    g = CheckFour();
-    if (g == 1)
-        p.alpha+=3;
-    if (g == 2)
-        p.beta+=3;
-    Node node;
+    if (!bj==0)
+    	p.alpha+=g.score;
+    else
+    	p.beta+=g.score;
+    Node node, delta;
     for (int i = (x - k >= 1 ? x - k : 1); i <= (x + k <= n ? x + k : n); i++)
     {
         for (int j = (y - k >= 1 ? y - k : 1); j <= (y + k <= n ? y + k : n); j++)
@@ -81,7 +82,7 @@ GoBang::Node GoBang::MiniMax(Node p, int x, int y, bool bj)
                     node = MiniMax(p, x, y, !bj);
                     mp[i][j] = '*';
                     if (node.alpha > p.alpha)
-                        p = node, p.x = i, p.y = j;
+                        delta = node, delta.x = i, delta.y = j;
                 }
                 if (bj == 1)
                 {
@@ -89,12 +90,13 @@ GoBang::Node GoBang::MiniMax(Node p, int x, int y, bool bj)
                     node = MiniMax(p, x, y, !bj);
                     mp[i][j] = '*';
                     if (node.beta > p.beta)
-                        p = node, p.x = i, p.y = j;
+                        delta = node, delta.x = i, delta.y = j;
                 }
             }
         }
     }
-    return p;
+    delta.alpha+=p.alpha,delta.beta+=p.beta;
+    return delta;
 }
 
 int GoBang::CheckWinner()
@@ -125,28 +127,59 @@ int GoBang::CheckWinner()
     return 0;
 }
 
-int GoBang::CheckFour()
+GoBang::Score GoBang::CheckScore(bool Player)
 {
+	Score score{0,0};
 	for (int i = 1; i <= n; i++)
     {
         for (int j = 1; j <= n; j++)
         {
-            if (mp[i][j] == mp[i][j + 1] && mp[i][j] == mp[i][j + 2] &&
-                mp[i][j] == mp[i][j + 3] && mp[i][j] != '*') // transverse
-                return mp[i][j] == 'O' ? 1 : 2;
+        	if (mp[i][j] == mp[i][j + 1] && mp[i][j] == mp[i][j + 2] &&
+                mp[i][j] == mp[i][j + 3] && mp[i][j] == mp[i][j + 4] &&
+                mp[i][j] == (Player==0?'O':'X')) // transverse
+                score.Win=1,score.score+=50;
             if (mp[i][j] == mp[i + 1][j] && mp[i][j] == mp[i + 2][j] &&
-                mp[i][j] == mp[i + 3][j] && mp[i][j] != '*') // vertical
-                return mp[i][j] == 'O' ? 1 : 2;
+                mp[i][j] == mp[i + 3][j] && mp[i][j] == mp[i + 4][j] &&
+                mp[i][j] == (Player==0?'O':'X')) // vertical
+                score.Win=1,score.score+=50;
             if (mp[i][j] == mp[i + 1][j + 1] && mp[i][j] == mp[i + 2][j + 2] &&
-                mp[i][j] == mp[i + 3][j + 3] && mp[i][j] != '*') // skimming
-                return mp[i][j] == 'O' ? 1 : 2;
+                mp[i][j] == mp[i + 3][j + 3] && mp[i][j] == mp[i + 4][j + 4] &&
+                mp[i][j] == (Player==0?'O':'X')) // skimming
+                score.Win=1,score.score+=50;
             if (i - 4 >= 1)
                 if (mp[i][j] == mp[i - 1][j + 1] && mp[i][j] == mp[i - 2][j + 2] &&
-                    mp[i][j] == mp[i - 3][j + 3] && mp[i][j] != '*') // suppress
-                    return mp[i][j] == 'O' ? 1 : 2;
+                    mp[i][j] == mp[i - 3][j + 3] && mp[i][j] == mp[i - 4][j + 4] &&
+                    mp[i][j] == (Player==0?'O':'X')) // suppress
+                    score.Win=1,score.score+=50;
+            if (mp[i][j] == mp[i][j + 1] && mp[i][j] == mp[i][j + 2] &&
+                mp[i][j] == mp[i][j + 3] && mp[i][j] == (Player==0?'O':'X')) // transverse
+                score.score+=20;
+            if (mp[i][j] == mp[i + 1][j] && mp[i][j] == mp[i + 2][j] &&
+                mp[i][j] == mp[i + 3][j] && mp[i][j] == (Player==0?'O':'X')) // vertical
+                score.score+=20;
+            if (mp[i][j] == mp[i + 1][j + 1] && mp[i][j] == mp[i + 2][j + 2] &&
+                mp[i][j] == mp[i + 3][j + 3] && mp[i][j] == (Player==0?'O':'X')) // skimming
+                score.score+=20;
+            if (i - 3 >= 1)
+                if (mp[i][j] == mp[i - 1][j + 1] && mp[i][j] == mp[i - 2][j + 2] &&
+                    mp[i][j] == mp[i - 3][j + 3] && mp[i][j] == (Player==0?'O':'X')) // suppress
+                    score.score+=10;
+            if (mp[i][j] == mp[i][j + 1] && mp[i][j] == mp[i][j + 2] 
+                && mp[i][j] == (Player==0?'O':'X')) // transverse
+                score.score+=10;
+            if (mp[i][j] == mp[i + 1][j] && mp[i][j] == mp[i + 2][j]
+                && mp[i][j] == (Player==0?'O':'X')) // vertical
+                score.score+=10;
+            if (mp[i][j] == mp[i + 1][j + 1] && mp[i][j] == mp[i + 2][j + 2]
+                && mp[i][j] == (Player==0?'O':'X')) // skimming
+                score.score+=10;
+            if (i - 2 >= 1)
+                if (mp[i][j] == mp[i - 1][j + 1] && mp[i][j] == mp[i - 2][j + 2]
+				&& mp[i][j] == (Player==0?'O':'X')) // suppress
+                    score.score+=10;
         }
     }
-    return 0;
+    return score;
 }
 
 void GoBang::Print()
@@ -286,7 +319,7 @@ GoBang gb;
 
 int main()
 {
-    gb.Init(5, 3); // It must to be a odd number. For example 15, 17
+    gb.Init(15, 1); // It must to be a odd number. For example 15, 17
     gb.StartGame();
     return 0;
 }
