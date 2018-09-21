@@ -171,6 +171,32 @@ GoBang::Score GoBang::CheckScore(bool Player)
                     mp[i][j] == mp[i - 3][j + 3] && mp[i][j] == mp[i - 4][j + 4] &&
                     mp[i][j] == (Player==0?'O':'X')) // suppress
                     score.Win=1,score.score+=1000;
+            if (mp[i][j] == mp[i][j + 1] && mp[i][j] == mp[i][j + 2] &&
+                mp[i][j] == mp[i][j + 3] && mp[i][j] == (Player==0?'O':'X')) // transverse
+                score.score+=80;
+            if (mp[i][j] == mp[i + 1][j] && mp[i][j] == mp[i + 2][j] &&
+                mp[i][j] == mp[i + 3][j] && mp[i][j] == (Player==0?'O':'X')) // vertical
+                score.score+=80;
+            if (mp[i][j] == mp[i + 1][j + 1] && mp[i][j] == mp[i + 2][j + 2] &&
+                mp[i][j] == mp[i + 3][j + 3] && mp[i][j] == (Player==0?'O':'X')) // skimming
+                score.score+=80;
+            if (i - 3 >= 1)
+                if (mp[i][j] == mp[i - 1][j + 1] && mp[i][j] == mp[i - 2][j + 2] &&
+                    mp[i][j] == mp[i - 3][j + 3] && mp[i][j] == (Player==0?'O':'X')) // suppress
+                    score.score+=80;
+            if (mp[i][j] == mp[i][j + 1] && mp[i][j] == mp[i][j + 2] 
+                && mp[i][j] == (Player==0?'O':'X')) // transverse
+                score.score+=25;
+            if (mp[i][j] == mp[i + 1][j] && mp[i][j] == mp[i + 2][j]
+                && mp[i][j] == (Player==0?'O':'X')) // vertical
+                score.score+=25;
+            if (mp[i][j] == mp[i + 1][j + 1] && mp[i][j] == mp[i + 2][j + 2]
+                && mp[i][j] == (Player==0?'O':'X')) // skimming
+                score.score+=25;
+            if (i - 2 >= 1)
+                if (mp[i][j] == mp[i - 1][j + 1] && mp[i][j] == mp[i - 2][j + 2]
+				&& mp[i][j] == (Player==0?'O':'X')) // suppress
+                    score.score+=25;
         }
     }
     return score;
@@ -319,7 +345,7 @@ GoBang gb;
 
 int main()
 {
-    gb.Init(15, 5); // It must to be a odd number. For example 15, 17
+    gb.Init(15, 1); // It must to be a odd number. For example 15, 17
     gb.StartGame();
     return 0;
 }
