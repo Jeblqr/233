@@ -23,7 +23,7 @@ class GoBang
 		int score;
     };
     char mp[Max][Max];
-    int n, x, y, zx, zy, lx, ly, k, gx, gy;
+    int n, x, y, zx, zy, lx, ly, k, gx, gy, total;
     bool Player;
     Score CheckScore(bool Player);
     int CheckWinner();
@@ -43,6 +43,7 @@ class GoBang
 
 void GoBang::Init(int n, int k)
 {
+	total = 0;
     this->n = n, this->k = k;
     memset(mp, '*', sizeof mp);
     Player = 1;
@@ -58,7 +59,7 @@ void GoBang::CaseIt(int x, int y)
 GoBang::Node GoBang::MiniMax(Node p, int x, int y, bool bj)
 {
     Score g = CheckScore(!Player);
-    if (g.Win==1)
+    if (g.Win == 1)
     {
     	if (!bj == 0)
     		p.alpha+=g.score;
@@ -66,7 +67,7 @@ GoBang::Node GoBang::MiniMax(Node p, int x, int y, bool bj)
     		p.beta+=g.score;
     	return p;
     }
-    if (!bj==0)
+    if (!bj == 0)
     	p.alpha+=g.score;
     else
     	p.beta+=g.score;
@@ -108,7 +109,8 @@ GoBang::Node GoBang::MiniMax(Node p, int x, int y, bool bj)
             }
         }
     }
-    delta.alpha+=p.alpha,delta.beta+=p.beta;
+    delta.alpha+=p.alpha;
+	delta.beta+=p.beta;
     return delta;
 }
 
@@ -150,20 +152,20 @@ GoBang::Score GoBang::CheckScore(bool Player)
         	if (mp[i][j] == mp[i][j + 1] && mp[i][j] == mp[i][j + 2] &&
                 mp[i][j] == mp[i][j + 3] && mp[i][j] == mp[i][j + 4] &&
                 mp[i][j] == (Player==0?'O':'X')) // transverse
-                score.Win=1,score.score+=1000;
+                score.Win=1,score.score+=100;
             if (mp[i][j] == mp[i + 1][j] && mp[i][j] == mp[i + 2][j] &&
                 mp[i][j] == mp[i + 3][j] && mp[i][j] == mp[i + 4][j] &&
                 mp[i][j] == (Player==0?'O':'X')) // vertical
-                score.Win=1,score.score+=1000;
+                score.Win=1,score.score+=100;
             if (mp[i][j] == mp[i + 1][j + 1] && mp[i][j] == mp[i + 2][j + 2] &&
                 mp[i][j] == mp[i + 3][j + 3] && mp[i][j] == mp[i + 4][j + 4] &&
                 mp[i][j] == (Player==0?'O':'X')) // skimming
-                score.Win=1,score.score+=1000;
+                score.Win=1,score.score+=100;
             if (i - 4 >= 1)
                 if (mp[i][j] == mp[i - 1][j + 1] && mp[i][j] == mp[i - 2][j + 2] &&
                     mp[i][j] == mp[i - 3][j + 3] && mp[i][j] == mp[i - 4][j + 4] &&
                     mp[i][j] == (Player==0?'O':'X')) // suppress
-                    score.Win=1,score.score+=1000;
+                    score.Win=1,score.score+=100;
             if (mp[i][j] == mp[i][j + 1] && mp[i][j] == mp[i][j + 2] &&
                 mp[i][j] == mp[i][j + 3] && mp[i][j] == (Player==0?'O':'X')) // transverse
                 score.score+=80;
@@ -179,17 +181,17 @@ GoBang::Score GoBang::CheckScore(bool Player)
                     score.score+=80;
             if (mp[i][j] == mp[i][j + 1] && mp[i][j] == mp[i][j + 2] 
                 && mp[i][j] == (Player==0?'O':'X')) // transverse
-                score.score+=25;
+                score.score+=10;
             if (mp[i][j] == mp[i + 1][j] && mp[i][j] == mp[i + 2][j]
                 && mp[i][j] == (Player==0?'O':'X')) // vertical
-                score.score+=25;
+                score.score+=10;
             if (mp[i][j] == mp[i + 1][j + 1] && mp[i][j] == mp[i + 2][j + 2]
                 && mp[i][j] == (Player==0?'O':'X')) // skimming
-                score.score+=25;
+                score.score+=10;
             if (i - 2 >= 1)
                 if (mp[i][j] == mp[i - 1][j + 1] && mp[i][j] == mp[i - 2][j + 2]
 				&& mp[i][j] == (Player==0?'O':'X')) // suppress
-                    score.score+=25;
+                    score.score+=10;
         }
     }
     return score;
@@ -232,9 +234,14 @@ void GoBang::Print(int x, int y)
 }
 void GoBang::AI()
 {
+	if (total == 1)
+	{
+		CaseIt(zx,zy);
+		return;
+	}
     Node node1 = MiniMax(Node{lx, ly, 0, 0}, lx, ly, 1), node2 = MiniMax(Node{gx, gy, 0, 0}, gx, gy, 1);
     Node node;
-    if (Player==0)
+    if (Player == 0)
     	node=node1.alpha>node2.alpha?node1:node2;
     else
     	node=node1.beta>node2.beta?node1:node2;
@@ -314,9 +321,10 @@ int GoBang::StartGame()
     Node node;
     while (true)
     {
+    	total++;
         x = zx, y = zy;
         Player = !Player;
-        if (Player == 1)
+        if (Player == 0)
             AI();
         else
             Check();
@@ -342,3 +350,5 @@ int main()
     gb.StartGame();
     return 0;
 }
+
+// When the AI is the first, it will be Run-Time Error
