@@ -79,11 +79,15 @@ GoBang::Node GoBang::MiniMax(Node p, int x, int y, bool bj)
                     node = MiniMax(p, x, y, !bj);
                     mp[i][j] = '*';
                     if (bj == Player)
-	                    if (node.alpha > delta.alpha)
+                    {
+                    	if (node.alpha > delta.alpha)
 		                    delta = node, delta.x = i, delta.y = j;
+                    }
 	                else
+	                {
 	                	if (node.beta < delta.beta)
 	                        delta = node, delta.x = i, delta.y = j;
+	                }	
                 }
                 if (bj == 1)
                 {
@@ -91,11 +95,15 @@ GoBang::Node GoBang::MiniMax(Node p, int x, int y, bool bj)
                     node = MiniMax(p, x, y, !bj);
                     mp[i][j] = '*';
                     if (bj == Player)
+                    {
                     	if (node.beta > delta.beta)
 	                        delta = node, delta.x = i, delta.y = j;
+                    }
                     else
-	                    if (node.alpha < delta.alpha)
+                    {
+                    	if (node.alpha < delta.alpha)
                         	delta = node, delta.x = i, delta.y = j;
+                    }
                 }
             }
         }
