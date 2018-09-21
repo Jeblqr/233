@@ -70,11 +70,15 @@ GoBang::Node GoBang::MiniMax(int x, int y, bool bj)
     if (g.Win==1)
     {
     	if (!bj == 0)
-    		delta.alpha+=g.score;
+    		node.alpha+=g.score;
     	else
-    		delta.beta+=g.score;
-    	return delta;
+    		node.beta+=g.score;
+    	return node;
     }
+    if (!bj == 0)
+    	node.alpha+=g.score;
+    else
+    	node.beta+=g.score;
     for (int i = (x - k >= 1 ? x - k : 1); i <= (x + k <= n ? x + k : n); i++)
     {
         for (int j = (y - k >= 1 ? y - k : 1); j <= (y + k <= n ? y + k : n); j++)
@@ -197,6 +201,15 @@ GoBang::Score GoBang::CheckScore(bool Player)
                 if (mp[i][j] == mp[i - 1][j + 1] && mp[i][j] == mp[i - 2][j + 2]
 				&& mp[i][j] == (Player==0?'O':'X')) // suppress
                     score.score+=25;
+            if (mp[i][j] == mp[i][j + 1] && mp[i][j] == (Player==0?'O':'X')) // transverse
+                score.score+=15;
+            if (mp[i][j] == mp[i + 1][j] && mp[i][j] == (Player==0?'O':'X')) // vertical
+                score.score+=15;
+            if (mp[i][j] == mp[i + 1][j + 1] && mp[i][j] == (Player==0?'O':'X')) // skimming
+                score.score+=15;
+            if (i - 1 >= 1)
+                if (mp[i][j] == mp[i - 1][j + 1] && mp[i][j] == (Player==0?'O':'X')) // suppress
+                    score.score+=15;
         }
     }
     return score;
