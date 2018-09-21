@@ -16,11 +16,19 @@ class GoBang
     struct Node
     {
         int x, y, alpha, beta;
+        Node()
+        {
+        	x=y=alpha=beta=0;
+        }
     };
     struct Score
     {
     	bool Win;
 		int score;
+		Score()
+		{
+			Win=score=0;
+		}
     };
     char mp[Max][Max];
     int n, x, y, zx, zy, lx, ly, k, gx, gy;
@@ -33,7 +41,7 @@ class GoBang
     void SetMapCase(int x, int y);
     void CaseIt(int x, int y);
     void Print(int x, int y);
-    Node MiniMax(Node p, int x, int y, bool bj);
+    Node MiniMax(int x, int y, bool bj);
     void AI();
 
   public:
@@ -55,18 +63,18 @@ void GoBang::CaseIt(int x, int y)
     mp[y][x] = Player ? 'X' : 'O';
 }
 
-GoBang::Node GoBang::MiniMax(Node p, int x, int y, bool bj)
+GoBang::Node GoBang::MiniMax(int x, int y, bool bj)
 {
     Score g = CheckScore(!Player);
+    Node node, delta;
     if (g.Win==1)
     {
     	if (!bj == 0)
-    		p.alpha+=g.score;
+    		delta.alpha+=g.score;
     	else
-    		p.beta+=g.score;
-    	return p;
+    		delta.beta+=g.score;
+    	return delta;
     }
-    Node node, delta;
     for (int i = (x - k >= 1 ? x - k : 1); i <= (x + k <= n ? x + k : n); i++)
     {
         for (int j = (y - k >= 1 ? y - k : 1); j <= (y + k <= n ? y + k : n); j++)
@@ -76,7 +84,7 @@ GoBang::Node GoBang::MiniMax(Node p, int x, int y, bool bj)
                 if (bj == 0)
                 {
                     mp[i][j] = 'O';
-                    node = MiniMax(p, x, y, !bj);
+                    node = MiniMax(x, y, !bj);
                     mp[i][j] = '*';
                     if (bj == Player)
                     {
@@ -92,7 +100,7 @@ GoBang::Node GoBang::MiniMax(Node p, int x, int y, bool bj)
                 if (bj == 1)
                 {
                     mp[i][j] = 'X';
-                    node = MiniMax(p, x, y, !bj);
+                    node = MiniMax(x, y, !bj);
                     mp[i][j] = '*';
                     if (bj == Player)
                     {
@@ -108,7 +116,6 @@ GoBang::Node GoBang::MiniMax(Node p, int x, int y, bool bj)
             }
         }
     }
-    delta.alpha+=p.alpha,delta.beta+=p.beta;
     return delta;
 }
 
@@ -142,7 +149,7 @@ int GoBang::CheckWinner()
 
 GoBang::Score GoBang::CheckScore(bool Player)
 {
-	Score score{0,0};
+	Score score;
 	for (int i = 1; i <= n; i++)
     {
         for (int j = 1; j <= n; j++)
@@ -206,7 +213,7 @@ void GoBang::Print(int x, int y)
 }
 void GoBang::AI()
 {
-    Node node1 = MiniMax(Node{lx, ly, 0, 0}, lx, ly, 1), node2 = MiniMax(Node{gx, gy, 0, 0}, gx, gy, 1);
+    Node node1 = MiniMax(lx, ly, 1), node2 = MiniMax(gx, gy, 1);
     Node node;
     if (Player==0)
     	node=node1.alpha>node2.alpha?node1:node2;
