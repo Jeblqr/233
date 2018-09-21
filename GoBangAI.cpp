@@ -75,33 +75,33 @@ GoBang::Node GoBang::MiniMax(Node p, int x, int y, bool bj)
     {
         for (int j = (y - k >= 1 ? y - k : 1); j <= (y + k <= n ? y + k : n); j++)
         {
-            if (mp[j][i] == '*')
+            if (mp[i][j] == '*')
             {
                 if (bj == 0)
                 {
-                    mp[j][i] = 'O';
+                    mp[i][j] = 'O';
                     node = MiniMax(p, x, y, !bj);
-                    mp[j][i] = '*';
+                    mp[i][j] = '*';
                     if (bj == Player)
-	                    if (node.beta < delta.beta)
-	                        delta = node, delta.x = i, delta.y = j;
+	                    if (node.alpha > delta.alpha)
+		                    delta = node, delta.x = i, delta.y = j;
 	                else
-	                	if (node.alpha > delta.alpha)
+	                	if (node.beta < delta.beta)
 	                        delta = node, delta.x = i, delta.y = j;
                     /*if (node.alpha > delta.alpha)
                         delta = node, delta.x = i, delta.y = j;*/
                 }
                 if (bj == 1)
                 {
-                    mp[j][i] = 'X';
+                    mp[i][j] = 'X';
                     node = MiniMax(p, x, y, !bj);
-                    mp[j][i] = '*';
+                    mp[i][j] = '*';
                     if (bj == Player)
-                    	if (node.alpha < delta.alpha)
-                        	delta = node, delta.x = i, delta.y = j;
-                    else
-	                    if (node.beta > delta.beta)
+                    	if (node.beta > delta.beta)
 	                        delta = node, delta.x = i, delta.y = j;
+                    else
+	                    if (node.alpha < delta.alpha)
+                        	delta = node, delta.x = i, delta.y = j;
                     /*if (node.beta > delta.beta)
                         delta = node, delta.x = i, delta.y = j;*/
                 }
