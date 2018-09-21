@@ -175,6 +175,8 @@ GoBang::Score GoBang::CheckScore(bool Player)
                     mp[i][j] == mp[i - 3][j + 3] && mp[i][j] == mp[i - 4][j + 4] &&
                     mp[i][j] == (Player==0?'O':'X')) // suppress
                     score.Win=1,score.score+=1000;
+            if (score.Win == 1)
+            	return score;
             if (mp[i][j] == mp[i][j + 1] && mp[i][j] == mp[i][j + 2] &&
                 mp[i][j] == mp[i][j + 3] && mp[i][j] == (Player==0?'O':'X')) // transverse
                 score.score+=80;
