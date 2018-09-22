@@ -68,9 +68,9 @@ GoBang::Node GoBang::MiniMax()
         {
             if (mp[i][j] == '*')
             {
-            	int k=Max(0);
-            	if (k>node.k)
-            		node.k=k,node.x=i,node.y=j;
+            	int g=Max(k);
+            	if (g>node.k)
+            		node.k=g,node.x=i,node.y=j;
         	}
     	}
     }
@@ -84,7 +84,7 @@ int GoBang::Max(int Depth)
     {
     	return g.score;
     }
-    int k=0;
+    int m=0;
     for (int i = 1; i <= n; i++)
     {
         for (int j = 1; j <= n; j++)
@@ -92,13 +92,13 @@ int GoBang::Max(int Depth)
         	if (mp[i][j] == '*')
         	{
 	        	mp[i][j] = 'X';
-	        	k = max(k,Min(Depth+1));
+	        	m = max(m,Min(Depth-1));
 	            mp[i][j] = '*';
         	}
         	
         }
     }
-    return k;
+    return m;
 }
 
 int GoBang::Min(int Depth)
@@ -108,7 +108,7 @@ int GoBang::Min(int Depth)
     {
     	return g.score;
     }
-    int k=0;
+    int m=0;
     for (int i = 1; i <= n; i++)
     {
         for (int j = 1; j <= n; j++)
@@ -116,12 +116,12 @@ int GoBang::Min(int Depth)
         	if (mp[i][j] == '*')
         	{
 	        	mp[i][j] = 'O';
-	        	k = min(k,Max(Depth+1));
+	        	m = min(m,Max(Depth-1));
 	            mp[i][j] = '*';
         	}
         }
     }
-    return k;
+    return m;
 }
 
 int GoBang::CheckWinner()
@@ -356,7 +356,7 @@ GoBang gb;
 
 int main()
 {
-    gb.Init(15, 2); 
+    gb.Init(15, 4); 
     gb.StartGame();
     return 0;
 }
