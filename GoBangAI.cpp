@@ -16,7 +16,8 @@ class GoBang
         int x, y, k;
         Node()
         {
-        	x=y=k=0;
+        	x=y=0;
+        	k=-2147483648;
         }
     };
     struct Score
@@ -72,7 +73,9 @@ GoBang::Node GoBang::MiniMax()
         {
             if (mp[i][j] == '*')
             {
-            	int g=Max(k);
+            	mp[i][j] = 'X';
+            	int g=Min(k);
+	            mp[i][j] = '*';
             	if (g>node.k)
             		node.k=g,node.x=i,node.y=j;
         	}
@@ -83,6 +86,7 @@ GoBang::Node GoBang::MiniMax()
 
 int GoBang::Max(int Depth)
 {
+	//Print();
 	Score g = CheckScore(Player);
     if (g.Win==1 || Depth <= 0)
     {
@@ -107,6 +111,7 @@ int GoBang::Max(int Depth)
 
 int GoBang::Min(int Depth)
 {
+	//Print();
 	Score g = CheckScore(!Player);
     if (g.Win==1 || Depth <= 0)
     {
@@ -257,9 +262,7 @@ void GoBang::Print(int x, int y)
 }
 void GoBang::AI()
 {
-    Node node1 = MiniMax(), node2 = MiniMax();
-    Node node;
-    node=node1.k>node2.k?node1:node2;
+    Node node = MiniMax();
     CaseIt(node.x, node.y);
     gx=node.x,gy=node.y;
 }
