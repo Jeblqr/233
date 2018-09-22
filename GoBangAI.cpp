@@ -6,7 +6,7 @@
 #include <iostream>
 #include <queue>
 #include <string>
-#define Max 1000
+#define MMax 1000
 using namespace std;
 
 class GoBang
@@ -14,22 +14,6 @@ class GoBang
     struct Node
     {
         int x, y, k;
-        Node()
-        {
-        	x=y=k=0;
-        }
-        bool operator<(const Node &x) const
-        {
-        	return k<x.k;
-        }
-        bool operator>(const Node &x) const
-        {
-        	return k>x.k;
-        }
-        bool operator==(const Node &x) const
-        {
-        	return k==x.k;
-        }
     };
     struct Score
     {
@@ -40,7 +24,7 @@ class GoBang
 			Win=score=0;
 		}
     };
-    char mp[Max][Max];
+    char mp[MMax][MMax];
     int n, x, y, zx, zy, lx, ly, k, gx, gy;
     bool Player;
     Score CheckScore(bool Player);
@@ -51,7 +35,9 @@ class GoBang
     void SetMapCase(int x, int y);
     void CaseIt(int x, int y);
     void Print(int x, int y);
-    Node MiniMax(int x, int y, bool bj, int Depth);
+    int Max(int Depth);
+    int Min(int Depth);
+    Node MiniMax();
     void AI();
 
   public:
@@ -73,45 +59,69 @@ void GoBang::CaseIt(int x, int y)
     mp[y][x] = Player ? 'X' : 'O';
 }
 
-GoBang::Node GoBang::MiniMax(int x, int y, bool bj, int Depth)
+GoBang::Node GoBang::MiniMax()
 {
-    Score g = CheckScore(!Player);
-    Node node, delta;
-    if (g.Win==1 || Depth == k)
-    {
-    	delta.k+=g.score;
-    	return delta;
-    }
+	Node node;
     for (int i = 1; i <= n; i++)
     {
         for (int j = 1; j <= n; j++)
         {
             if (mp[i][j] == '*')
             {
-            	mp[i][j] = (bj == 0)?'O':'X';
-            	node = MiniMax(x, y, !bj, Depth+1);
-                mp[i][j] = '*';
-                if (bj == 1)
-                {
-                	if (delta > node || delta == node)
-                	{
-                		delta=node;
-                		delta.x=i,delta.y=j;
-                	}
-                }
-                else
-                {
-                	if (delta < node || delta == node)
-                	{
-                		delta=node;
-                		delta.x=i,delta.y=j;
-                	}
-                }
-                	
-            }
+            	int k=Max(0);
+            	if (k>node.k)
+            		node.k=k,node.x=i,node.y=j;
+        	}
+    	}
+    }
+    return node;
+}
+
+int GoBang::Max(int Depth)
+{
+	Score g = CheckScore(Player);
+    if (g.Win==1 || Depth == k)
+    {
+    	return g.score;
+    }
+    int k=0;
+    for (int i = 1; i <= n; i++)
+    {
+        for (int j = 1; j <= n; j++)
+        {
+        	if (mp[i][j] == '*')
+        	{
+	        	mp[i][j] = 'X';
+	        	k = max(k,Min(Depth+1));
+	            mp[i][j] = '*';
+        	}
+        	
         }
     }
-    return delta;
+    return k;
+}
+
+int GoBang::Min(int Depth)
+{
+	Score g = CheckScore(!Player);
+    if (g.Win==1 || Depth == k)
+    {
+    	return g.score;
+    }
+    int k=0;
+    for (int i = 1; i <= n; i++)
+    {
+        for (int j = 1; j <= n; j++)
+        {
+        	if (mp[i][j] == '*')
+        	{
+	        	mp[i][j] = 'O';
+	        	k = min(k,Max(Depth+1));
+	            mp[i][j] = '*';
+        	}
+        }
+    }
+    return k;
 }
 
 int GoBang::CheckWinner()
@@ -152,55 +162,55 @@ GoBang::Score GoBang::CheckScore(bool Player)
         	if (mp[i][j] == mp[i][j + 1] && mp[i][j] == mp[i][j + 2] &&
                 mp[i][j] == mp[i][j + 3] && mp[i][j] == mp[i][j + 4] &&
                 mp[i][j] == (Player==0?'O':'X')) // transverse
-                score.Win=1,score.score+=10000;
+                score.Win=1,score.score+=100;
             if (mp[i][j] == mp[i + 1][j] && mp[i][j] == mp[i + 2][j] &&
                 mp[i][j] == mp[i + 3][j] && mp[i][j] == mp[i + 4][j] &&
                 mp[i][j] == (Player==0?'O':'X')) // vertical
-                score.Win=1,score.score+=10000;
+                score.Win=1,score.score+=100;
             if (mp[i][j] == mp[i + 1][j + 1] && mp[i][j] == mp[i + 2][j + 2] &&
                 mp[i][j] == mp[i + 3][j + 3] && mp[i][j] == mp[i + 4][j + 4] &&
                 mp[i][j] == (Player==0?'O':'X')) // skimming
-                score.Win=1,score.score+=10000;
+                score.Win=1,score.score+=100;
             if (i - 4 >= 1)
                 if (mp[i][j] == mp[i - 1][j + 1] && mp[i][j] == mp[i - 2][j + 2] &&
                     mp[i][j] == mp[i - 3][j + 3] && mp[i][j] == mp[i - 4][j + 4] &&
                     mp[i][j] == (Player==0?'O':'X')) // suppress
-                    score.Win=1,score.score+=10000;
+                    score.Win=1,score.score+=100;
             if (mp[i][j] == mp[i][j + 1] && mp[i][j] == mp[i][j + 2] &&
                 mp[i][j] == mp[i][j + 3] && mp[i][j] == (Player==0?'O':'X')) // transverse
-                score.score+=5000;
+                score.score+=50;
             if (mp[i][j] == mp[i + 1][j] && mp[i][j] == mp[i + 2][j] &&
                 mp[i][j] == mp[i + 3][j] && mp[i][j] == (Player==0?'O':'X')) // vertical
-                score.score+=5000;
+                score.score+=50;
             if (mp[i][j] == mp[i + 1][j + 1] && mp[i][j] == mp[i + 2][j + 2] &&
                 mp[i][j] == mp[i + 3][j + 3] && mp[i][j] == (Player==0?'O':'X')) // skimming
-                score.score+=5000;
+                score.score+=50;
             if (i - 3 >= 1)
                 if (mp[i][j] == mp[i - 1][j + 1] && mp[i][j] == mp[i - 2][j + 2] &&
                     mp[i][j] == mp[i - 3][j + 3] && mp[i][j] == (Player==0?'O':'X')) // suppress
-                    score.score+=5000;
+                    score.score+=50;
             if (mp[i][j] == mp[i][j + 1] && mp[i][j] == mp[i][j + 2] 
                 && mp[i][j] == (Player==0?'O':'X')) // transverse
-                score.score+=500;
+                score.score+=25;
             if (mp[i][j] == mp[i + 1][j] && mp[i][j] == mp[i + 2][j]
                 && mp[i][j] == (Player==0?'O':'X')) // vertical
-                score.score+=500;
+                score.score+=25;
             if (mp[i][j] == mp[i + 1][j + 1] && mp[i][j] == mp[i + 2][j + 2]
                 && mp[i][j] == (Player==0?'O':'X')) // skimming
-                score.score+=500;
+                score.score+=25;
             if (i - 2 >= 1)
                 if (mp[i][j] == mp[i - 1][j + 1] && mp[i][j] == mp[i - 2][j + 2]
 				&& mp[i][j] == (Player==0?'O':'X')) // suppress
-                    score.score+=500;
+                    score.score+=25;
             if (mp[i][j] == mp[i][j + 1] && mp[i][j] == (Player==0?'O':'X')) // transverse
-                score.score+=100;
+                score.score+=10;
             if (mp[i][j] == mp[i + 1][j] && mp[i][j] == (Player==0?'O':'X')) // vertical
-                score.score+=100;
+                score.score+=10;
             if (mp[i][j] == mp[i + 1][j + 1] && mp[i][j] == (Player==0?'O':'X')) // skimming
-                score.score+=100;
+                score.score+=10;
             if (i - 1 >= 1)
                 if (mp[i][j] == mp[i - 1][j + 1] && mp[i][j] == (Player==0?'O':'X')) // suppress
-                    score.score+=100;
+                    score.score+=10;
         }
     }
     return score;
@@ -243,7 +253,7 @@ void GoBang::Print(int x, int y)
 }
 void GoBang::AI()
 {
-    Node node1 = MiniMax(lx, ly, 1, 0), node2 = MiniMax(gx, gy, 1, 0);
+    Node node1 = MiniMax(), node2 = MiniMax();
     Node node;
     node=node1.k>node2.k?node1:node2;
     CaseIt(node.x, node.y);
@@ -346,7 +356,7 @@ GoBang gb;
 
 int main()
 {
-    gb.Init(15, 6); 
+    gb.Init(15, 2); 
     gb.StartGame();
     return 0;
 }
