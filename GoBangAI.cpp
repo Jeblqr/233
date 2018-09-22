@@ -30,7 +30,7 @@ class GoBang
 		}
     };
     char mp[MMax][MMax];
-    int n, x, y, zx, zy, lx, ly, k, gx, gy, gg;
+    int n, x, y, zx, zy, lx, ly, k, gx, gy;
     bool Player;
     Score CheckScore(bool Player);
     int CheckWinner();
@@ -46,13 +46,13 @@ class GoBang
     void AI();
 
   public:
-    void Init(int n, int k, int gg);
+    void Init(int n, int k);
     int StartGame();
 };
 
-void GoBang::Init(int n, int k, int gg)
+void GoBang::Init(int n, int k)
 {
-    this->n = n, this->k = k, this->gg = gg;
+    this->n = n, this->k = k;
     memset(mp, '*', sizeof mp);
     Player = 1;
     zx = zy = n / 2 + 1;
@@ -67,9 +67,9 @@ void GoBang::CaseIt(int x, int y)
 GoBang::Node GoBang::MiniMax()
 {
 	Node node;
-    for (int i = (lx-gg>=1?lx-gg:1); i <= (lx+gg<=n?lx+gg:n); i++)
+    for (int i = 1; i <= n; i++)
     {
-        for (int j = (ly-gg>=1?ly-gg:1); j <= (ly+gg<=n?ly+gg:n); j++)
+        for (int j = 1; j <= n; j++)
         {
             if (mp[i][j] == '*')
             {
@@ -93,9 +93,9 @@ int GoBang::Max(int Depth)
     	return g.score;
     }
     int m=-2147483648;
-    for (int i = (lx-gg>=1?lx-gg:1); i <= (lx+gg<=n?lx+gg:n); i++)
+    for (int i = 1; i <= n; i++)
     {
-        for (int j = (ly-gg>=1?ly-gg:1); j <= (ly+gg<=n?ly+gg:n); j++)
+        for (int j = 1; j <= n; j++)
         {
         	if (mp[i][j] == '*')
         	{
@@ -118,9 +118,9 @@ int GoBang::Min(int Depth)
     	return g.score;
     }
     int m=2147483647;
-    for (int i = (lx-gg>=1?lx-gg:1); i <= (lx+gg<=n?lx+gg:n); i++)
+    for (int i = 1; i <= n; i++)
     {
-        for (int j = (ly-gg>=1?ly-gg:1); j <= (ly+gg<=n?ly+gg:n); j++)
+        for (int j = 1; j <= n; j++)
         {
         	if (mp[i][j] == '*')
         	{
@@ -363,7 +363,7 @@ GoBang gb;
 
 int main()
 {
-    gb.Init(15, 2, 5); 
+    gb.Init(5, 2); 
     gb.StartGame();
     return 0;
 }
