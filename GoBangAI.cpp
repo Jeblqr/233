@@ -14,6 +14,10 @@ class GoBang
     struct Node
     {
         int x, y, k;
+        Node()
+        {
+        	x=y=k=0;
+        }
     };
     struct Score
     {
@@ -25,7 +29,7 @@ class GoBang
 		}
     };
     char mp[MMax][MMax];
-    int n, x, y, zx, zy, lx, ly, k, gx, gy;
+    int n, x, y, zx, zy, lx, ly, k, gx, gy, gg;
     bool Player;
     Score CheckScore(bool Player);
     int CheckWinner();
@@ -41,13 +45,13 @@ class GoBang
     void AI();
 
   public:
-    void Init(int n, int k);
+    void Init(int n, int k, int gg);
     int StartGame();
 };
 
-void GoBang::Init(int n, int k)
+void GoBang::Init(int n, int k, int gg)
 {
-    this->n = n, this->k = k;
+    this->n = n, this->k = k, this->gg = gg;
     memset(mp, '*', sizeof mp);
     Player = 1;
     zx = zy = n / 2 + 1;
@@ -62,9 +66,9 @@ void GoBang::CaseIt(int x, int y)
 GoBang::Node GoBang::MiniMax()
 {
 	Node node;
-    for (int i = 1; i <= n; i++)
+    for (int i = (lx-gg>=1?lx-gg:1); i <= (lx+gg<=n?lx+gg:n); i++)
     {
-        for (int j = 1; j <= n; j++)
+        for (int j = (ly-gg>=1?ly-gg:1); j <= (ly+gg<=n?ly+gg:n); j++)
         {
             if (mp[i][j] == '*')
             {
@@ -80,14 +84,14 @@ GoBang::Node GoBang::MiniMax()
 int GoBang::Max(int Depth)
 {
 	Score g = CheckScore(Player);
-    if (g.Win==1 || Depth == k)
+    if (g.Win==1 || Depth <= 0)
     {
     	return g.score;
     }
-    int m=0;
-    for (int i = 1; i <= n; i++)
+    int m=-2147483648;
+    for (int i = (lx-gg>=1?lx-gg:1); i <= (lx+gg<=n?lx+gg:n); i++)
     {
-        for (int j = 1; j <= n; j++)
+        for (int j = (ly-gg>=1?ly-gg:1); j <= (ly+gg<=n?ly+gg:n); j++)
         {
         	if (mp[i][j] == '*')
         	{
@@ -104,14 +108,14 @@ int GoBang::Max(int Depth)
 int GoBang::Min(int Depth)
 {
 	Score g = CheckScore(!Player);
-    if (g.Win==1 || Depth == k)
+    if (g.Win==1 || Depth <= 0)
     {
     	return g.score;
     }
-    int m=0;
-    for (int i = 1; i <= n; i++)
+    int m=2147483647;
+    for (int i = (lx-gg>=1?lx-gg:1); i <= (lx+gg<=n?lx+gg:n); i++)
     {
-        for (int j = 1; j <= n; j++)
+        for (int j = (ly-gg>=1?ly-gg:1); j <= (ly+gg<=n?ly+gg:n); j++)
         {
         	if (mp[i][j] == '*')
         	{
@@ -356,7 +360,7 @@ GoBang gb;
 
 int main()
 {
-    gb.Init(15, 4); 
+    gb.Init(15, 2, 5); 
     gb.StartGame();
     return 0;
 }
