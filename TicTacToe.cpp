@@ -95,7 +95,7 @@ int TicTacToe::Check()
 	if (k==-1)
 		return 1;
 	if (k==0)
-		return -10;
+		return -2;
 }
 
 int TicTacToe::Min()
@@ -125,7 +125,7 @@ int TicTacToe::Max()
 {
 	if (CheckWin()!=-2)
 		return Check();
-	int maxn=-1,k;
+	int maxn=-999999,k;
 	for (int i=1;i<=3;i++)
 	{
 		for (int j=1;j<=3;j++)
