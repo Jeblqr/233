@@ -32,7 +32,7 @@ class TicTacToe
 int TicTacToe::StartGame()
 {
 	memset(p,-1,sizeof p);
-	int k,cnt=0;
+	int k=0,cnt=0;
 	bool bj=1;
 	while (k=CheckWin())
 	{
@@ -46,7 +46,6 @@ int TicTacToe::StartGame()
 			Choose(GetHumanMove(),bj);
 		bj=!bj;
 	}
-	Print();
 }
 
 void TicTacToe::Choose(Node node,bool bj)
@@ -91,11 +90,11 @@ int TicTacToe::Check()
 {
 	int k=CheckWin();
 	if (k==1)
-		return 2;
-	if (k==-1)
 		return 1;
+	if (k==-1)
+		return 0;
 	if (k==0)
-		return -2;
+		return -1;
 }
 
 int TicTacToe::Min()
@@ -184,7 +183,8 @@ TicTacToe Game;
 
 int main()
 {
-	int k=Game.StartGame();
+	int k;
+	k=Game.StartGame();
 	if (k==0)
 		cout<<"Human Has Got Win!";
 	if (k==1)
