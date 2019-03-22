@@ -1,3 +1,4 @@
+//-lwinmm
 #include<bits/stdc++.h>
 #include<windows.h>
 #pragma comment(lib,"winmm.lib")//for PlaySound
